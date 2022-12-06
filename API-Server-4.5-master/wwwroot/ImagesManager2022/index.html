@@ -335,8 +335,7 @@
                 return false;
             }
             function logout(){
-                window.sessionStorage.clear();
-                window.location.reload();
+                POST_LOGOUT(JSON.parse(window.sessionStorage.getItem("access_token")).UserId);
             }
 
             function init_UI() {

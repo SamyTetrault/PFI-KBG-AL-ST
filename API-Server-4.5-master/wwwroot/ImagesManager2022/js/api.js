@@ -82,5 +82,17 @@ function GET_USER(userId){
         error: () => {console.log("fonctionne po");}
     });
 }
+function POST_LOGOUT(userId){
+    $.ajax({
+        url: baseURL + "accounts/logout/" + userId,
+        type: 'GET',
+        contentType: 'application/json',
+        success: (data) => {
+            window.sessionStorage.clear();
+            window.location.reload();
+        },
+        error: () => {console.log("Impossible de se connecter");}
+    });
+}
 
 //  url: baseURL + "accounts/logout/" + userId,
