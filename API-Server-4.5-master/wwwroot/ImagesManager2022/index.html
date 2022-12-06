@@ -21,7 +21,7 @@
 
         <div class="mainContainer">
             <div class="headerPanel">
-                <div class="headerLayout">
+                <div class="headerLayout" id="headerLayout">
                     <img src="images/camera.png" alt="" data-toggle="tooltip" class="favicon"
                         title="Gestionnaire d'images">
                    <div style="display:flex">
@@ -56,8 +56,9 @@
                             D
                         </span>
                     </div>
-                    <span class="cmd fa fa-plus-square" id="newImageCmd" title="Ajouter un image"
-                        data-toggle="tooltip"></span>
+                    <span class="cmd fa fa-plus-square" id="newImageCmd" title="Ajouter un image" data-toggle="tooltip"></span>
+                    <!-- <span class="cmd fa fa-user-circle" id="loginCmd" title="Se Connecter" data-toggle="tooltip"></span> -->
+                    <!-- power-off (for logout) -->
                 </div>
             </div>
 
@@ -92,6 +93,27 @@
                 <div id="errorDlg">
                     <span id="errorMessage"></span>
                 </div>
+            </div>
+
+            <div id="login_header">
+                <!-- Filled programmatically
+                <div id="loginDlg">
+                    <form id="loginForm">
+                        <label for="title_input">Nom d'utilisateur</label>
+                        <input type="email" id="email_input" name="email_input" class="form-control" required>
+
+                        <label for="decription_input">Mot de passe</label>
+                        <input type="password" id="password_input" name="password_input" class="form-control" required>
+                    </form>
+                </div>
+                <div id="loginDlgOkBtn">
+                    <span id="confirmationMessage"></span>
+                </div>
+                <div id="errorDlg">
+                    <span id="errorMessage"></span>
+                </div>
+                */
+                -->
             </div>
         </div>
         <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
@@ -221,6 +243,13 @@
                 $("#errorDlg").dialog('open');
             }
 
+            function loginForm() {
+                holdCheckETag = true;
+                resetLoginForm();
+                $("#loginDlg").dialog('option', 'title', "Se Connecter");
+                $("#loginDlg").dialog('open');
+            }
+
             function newImage() {
                 holdCheckETag = true;
                 createMode = true;
@@ -288,10 +317,74 @@
                 $("#description_input").val(image.Description);
                 ImageUploader.setImage('image', image.OriginalURL);
             }
-
+            function resetLoginForm() {
+                $("#email_input").val("");
+                $("#password_input").val("");
+            }
+            function loginFromForm() {
+                // A modifier *********************************************************************
+                if ($("#loginForm")[0].checkValidity()) {
+                    let loginInfo = {
+                        Email: $("#email_input").val(),
+                        Password: $("#password_input").val()
+                    };
+                    return loginInfo;
+                } else {
+                    $("#loginForm")[0].reportValidity()
+                }
+                return false;
+            }
+            function logout(){
+                window.sessionStorage.clear();
+                window.location.reload();
+            }
 
             function init_UI() {
-                $("#newImageCmd").click(newImage)
+                /* Show a login button if not connected and his name if connected */
+                console.log(window.sessionStorage);
+
+                if(!window.sessionStorage.access_token || window.sessionStorage.access_token === 'undefined'){  
+                   $("#login_header").append(
+                        $(` 
+                        <div id="loginDlg">
+                            <form id="loginForm">
+                                <label for="title_input">Nom d'utilisateur</label>
+                                <input type="email" id="email_input" name="email_input" class="form-control" required>
+
+                                <label for="decription_input">Mot de passe</label>
+                                <input type="password" id="password_input" name="password_input" class="form-control" required>
+                            </form>
+                        </div>
+                        <div id="loginDlgOkBtn">
+                            <span id="confirmationMessage"></span>
+                        </div>
+                        <div id="errorDlg">
+                            <span id="errorMessage"></span>
+                        </div>`)
+                    ); 
+
+                    $("#headerLayout").append(
+                        $(
+                            '<span class="cmd fa fa-user-circle" id="loginCmd" title="Se Connecter" data-toggle="tooltip"></span>'
+                        )
+                    );
+                }
+                else {
+
+
+                    $("#headerLayout").append(
+                        $(
+                            '<span class="cmd fa fa-power-off" id="loginCmd" title="Se Déconnecter" data-toggle="tooltip" onClick="logout()"></span>'
+                        ),
+
+                        $(
+                            '<div></div>'
+                        )
+                    );
+                }
+                
+                $("#newImageCmd").click(newImage);
+                $("#loginCmd").click(loginForm);
 
                 $("#imageDlg").dialog({
                     title: "...",
@@ -381,6 +474,43 @@
                         }
                     }]
                 });
+                
+                $("#loginDlg").dialog({
+                    title: "...",
+                    autoOpen: false,
+                    modal: true,
+                    show: { effect: 'fade', speed: 400 },
+                    hide: { effect: 'fade', speed: 400 },
+                    width: 640,
+                    minWidth: 640,
+                    maxWidth: 640,
+                    height: 350,
+                    minHeight: 350,
+                    maxHeight: 350,
+                    position: { my: "top", at: "top", of: window },
+                    buttons: [{
+                        id: "loginDlgOkBtn",
+                        text: "Se connecter",
+                        click: function () {
+                            let loginInfo = loginFromForm();
+                            if (loginInfo) {
+                                POST_LOGIN(loginInfo, error);
+                                $(".scrollContainer").scrollTop(0);
+                                resetLoginForm();
+                                holdCheckETag = false;
+                                $(this).dialog("close");
+                            }
+                        }
+                    },
+                    {
+                        text: "Annuler",
+                        click: function () {
+                            holdCheckETag = false;
+                            $(this).dialog("close");
+                        }
+                    }]
+                });
+        
 
                 $(".scrollContainer").scroll(function () {
                     if ($(".scrollContainer").scrollTop() + $(".scrollContainer").innerHeight() >= $("#imagesList").height()) {
@@ -388,6 +518,7 @@
                     }
                 });
             }
+
         </script>
 
     </body>

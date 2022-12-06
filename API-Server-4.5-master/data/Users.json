@@ -10,9 +10,9 @@
     },
     {
         "Id": 2,
-        "Name": "Nicolas Chourot",
+        "Name": "Nicolas Chourottte",
         "Email": "nicolaschourot@videotron.ca",
-        "Password": "********",
+        "Password": "password",
         "Created": 1666908912,
         "VerifyCode": "verified",
         "AvatarGUID": "",

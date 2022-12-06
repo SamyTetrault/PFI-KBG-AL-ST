@@ -1,4 +1,5 @@
 const apiBaseURL = "http://localhost:5000/api/images";
+const baseURL = "http://localhost:5000/";
 
 function HEAD(successCallBack, errorCallBack) {
     $.ajax({
@@ -54,3 +55,32 @@ function DELETE(id, successCallBack, errorCallBack) {
         error: function (jqXHR) { errorCallBack(jqXHR.status) }
     });
 }
+function POST_LOGIN(loginInfo, errorCallBack) {
+    $.ajax({
+        url: baseURL + "token",
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(loginInfo),
+        success: (tokenInfo) => {
+            window.sessionStorage.setItem("access_token", JSON.stringify(tokenInfo));
+            GET_USER(tokenInfo.UserId);   
+            window.location.reload();
+        },
+        error: function (jqXHR) {
+            errorCallBack(jqXHR.status)
+        }
+    });
+}
+function GET_USER(userId){
+    $.ajax({
+        url: baseURL + "accounts/index/" + userId,
+        type: 'GET',
+        contentType: 'application/json',
+        success: (data) => { 
+            window.sessionStorage.setItem("user_info", JSON.stringify(data)); 
+        },
+        error: () => {console.log("fonctionne po");}
+    });
+}
+
+//  url: baseURL + "accounts/logout/" + userId,
