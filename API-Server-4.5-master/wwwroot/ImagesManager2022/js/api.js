@@ -96,52 +96,18 @@ function POST_LOGOUT(userId){
 }
 // two fonctions for register : one to create the account an one to link the image
 function POST_REGISTER(registerInfo, errorCallBack) {
-    let register = {
-        Id: 0,
-        Name: registerInfo.Name,
-        Email: registerInfo.Email,
-        Password: registerInfo.Password
-    };
     $.ajax({
-        url: baseURL + "accounts/register/" + register,
+        url: baseURL + "accounts/register",
         type: 'POST',
         contentType: 'application/json',
-        data: JSON.stringify(register),
+        data: JSON.stringify(registerInfo),
         success: (tokenInfo) => {
             window.sessionStorage.setItem("access_token", JSON.stringify(tokenInfo));
-            let avatarInfo = {
-                previousGUID: "",
-                imageDataBase64: registerInfo.Avatar
-            }
-            console.log(registerInfo.Avatar);
-            //POST_AVATAR(avatarInfo);
-            //console.log(guid);
-            // Post qui modify le avatar guid du user
-            /*
-            let userInfo = {
-                Id: window.sessionStorage.access_token,
-                AvatarGUID : ,
-                ImageData : 
-            }
-            */
-            //window.location.reload();
+            window.location.reload();
         },
         error: function (jqXHR) {
             errorCallBack(jqXHR.status)
         }
-    });
-}
-function POST_AVATAR(imageInfo, errorCallBack) {
-    $.ajax({
-        url: baseURL + "imageFilesRepository/storeImageData/" + imageInfo,
-        type: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify(imageInfo),
-        success: (tokenInfo) => { 
-            console.log(JSON.stringify(tokenInfo));
-            //return tokenInfo.GUID;
-        },
-        error: () => {console.log("Erreur");}
     });
 }
 

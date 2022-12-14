@@ -366,10 +366,12 @@
             // A modifier *********************************************************************
             if ($("#registerForm")[0].checkValidity()) {
                 let registerInfo = {
+                    Id: 0,
                     Name: $("#register_name_input").val(),
                     Email: $("#register_email_input").val(),
                     Password: $("#register_password_input").val(),
-                    Avatar: ImageUploader.getImageData('imageInput')
+                    AvatarGUID: "",
+                    ImageData: ImageUploader.getImageData('imageInput')
                 };
                 return registerInfo;
             } else {
