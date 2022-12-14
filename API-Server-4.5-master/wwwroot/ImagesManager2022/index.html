@@ -1,353 +1,392 @@
 <!DOCTYPE html>
 <html lang="en">
 
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Images Manager</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" rel="stylesheet">
-        <link rel="stylesheet"
-            href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
-        <link rel="stylesheet" href="css/site.css">
-        <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
-        <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
-        <link rel="icon" href="favicon.ico">
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Images Manager</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" href="css/site.css">
+    <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
+    <link rel="icon" href="favicon.ico">
+</head>
 
-    <body>
+<body>
 
-        <div class="mainContainer">
-            <div class="headerPanel">
-                <div class="headerLayout" id="headerLayout">
-                    <img src="images/camera.png" alt="" data-toggle="tooltip" class="favicon"
-                        title="Gestionnaire d'images">
-                   <div style="display:flex">
-                        <span class="header outLinedText tbg-yellow">
-                            P
-                        </span>
-                        <span class="header outLinedText tbg-orange">
-                            I
-                        </span>
-                        <span class="header outLinedText tbg-red">
-                            C
-                        </span>
-                        <span class="header outLinedText tbg-pink ">
-                            T
-                        </span>
-                        <span class="header outLinedText tbg-black">
-                            -
-                        </span>
-                        <span class="header outLinedText tbg-purple">
-                            C
-                        </span>
-                        <span class="header outLinedText tbg-blue">
-                            L
-                        </span>
-                        <span class="header outLinedText tbg-green">
-                            O
-                        </span>
-                        <span class="header outLinedText tbg-grass">
-                            U
-                        </span>
-                        <span class="header outLinedText tbg-yellow">
-                            D
-                        </span>
-                    </div>
-                    <span class="cmd fa fa-plus-square" id="newImageCmd" title="Ajouter un image" data-toggle="tooltip"></span>
-                    <!-- <span class="cmd fa fa-user-circle" id="loginCmd" title="Se Connecter" data-toggle="tooltip"></span> -->
-                    <!-- power-off (for logout) -->
+    <div class="mainContainer">
+        <div class="headerPanel">
+            <div class="headerLayout" id="headerLayout">
+                <img src="images/camera.png" alt="" data-toggle="tooltip" class="favicon" title="Gestionnaire d'images">
+                <div style="display:flex">
+                    <span class="header outLinedText tbg-yellow">
+                        P
+                    </span>
+                    <span class="header outLinedText tbg-orange">
+                        I
+                    </span>
+                    <span class="header outLinedText tbg-red">
+                        C
+                    </span>
+                    <span class="header outLinedText tbg-pink ">
+                        T
+                    </span>
+                    <span class="header outLinedText tbg-black">
+                        -
+                    </span>
+                    <span class="header outLinedText tbg-purple">
+                        C
+                    </span>
+                    <span class="header outLinedText tbg-blue">
+                        L
+                    </span>
+                    <span class="header outLinedText tbg-green">
+                        O
+                    </span>
+                    <span class="header outLinedText tbg-grass">
+                        U
+                    </span>
+                    <span class="header outLinedText tbg-yellow">
+                        D
+                    </span>
                 </div>
-            </div>
-
-            <div class="scrollContainer">
-                <div id="imagesList">
-                    <!-- filled programmatically-->
-                </div>
-            </div>
-            <div>
-                <div id="imageDlg">
-                    <form id="imageForm">
-                        <input type="hidden" id="Id_input" value="0">
-                        <input type="hidden" id="date_input" value="0">
-                        <input type="hidden" id="GUID_input" value="">
-
-                        <label for="title_input">Titre</label>
-                        <input type="text" id="title_input" class="form-control" required>
-
-                        <label for="decription_input">Description</label>
-                        <textarea id="description_input" class="form-control" required></textarea>
-
-                        <label for="image">Image</label>
-                        <div id='image' class='ImageUploader' defaultImage='images/No_Image.png'
-                            waitingImage='images/writing.gif'>
-                        </div>
-                        <div class="note">Cliquez-Déposez une image</div>
-                    </form>
-                </div>
-                <div id="confirmDeleteDlg">
-                    <span id="confirmationMessage"></span>
-                </div>
-                <div id="errorDlg">
-                    <span id="errorMessage"></span>
-                </div>
-            </div>
-
-            <div id="login_header">
-                <!-- Filled programmatically
-                <div id="loginDlg">
-                    <form id="loginForm">
-                        <label for="title_input">Nom d'utilisateur</label>
-                        <input type="email" id="email_input" name="email_input" class="form-control" required>
-
-                        <label for="decription_input">Mot de passe</label>
-                        <input type="password" id="password_input" name="password_input" class="form-control" required>
-                    </form>
-                </div>
-                <div id="loginDlgOkBtn">
-                    <span id="confirmationMessage"></span>
-                </div>
-                <div id="errorDlg">
-                    <span id="errorMessage"></span>
-                </div>
-                */
-                -->
+                <span class="cmd fa fa-plus-square" id="newImageCmd" title="Ajouter un image"
+                    data-toggle="tooltip"></span>
+                <!-- <span class="cmd fa fa-user-circle" id="loginCmd" title="Se Connecter" data-toggle="tooltip"></span> -->
+                <!-- power-off (for logout) -->
             </div>
         </div>
-        <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-        <script src="js/customValidation.js"></script>
-        <script src="js/imageUploader.js"></script>
-        <script src="js/api.js"></script>
-        <script src="js/date.js"></script>
-        <script defer>
-            const periodicRefreshPeriod = 15;
-            let holdCheckETag = false;
-            let currentETag = "";
-            let createMode = true;
-            let searchCategory = "";
-            let searchTitle = "";
-            let hideSearchBar = true;
-            let imageIdToDelete = 0; // used by confirmDeleteDlg
-            let selectedCategory = "";
-            let imagesCount = 50;
-            let appendCount = 3;
-            let previousScrollPosition = 0;
-            let appendMode = false;
 
-            init_UI();
-            HEAD(checkETag, error);
-            setInterval(() => { HEAD(checkETag, error) }, periodicRefreshPeriod * 1000);
+        <div class="scrollContainer">
+            <div id="imagesList">
+                <!-- filled programmatically-->
+            </div>
+        </div>
+        <div>
+            <div id="imageDlg">
+                <form id="imageForm">
+                    <input type="hidden" id="Id_input" value="0">
+                    <input type="hidden" id="date_input" value="0">
+                    <input type="hidden" id="GUID_input" value="">
 
-            function checkETag(ETag) {
-                if (!holdCheckETag && ETag != currentETag) {
-                    currentETag = ETag;
-                    getImagesList();
-                }
-            }
+                    <label for="title_input">Titre</label>
+                    <input type="text" id="title_input" class="form-control" required>
 
-            function getImagesList(refresh = true) {
-                appendMode = !refresh;
-                function prepareQueryString() {
-                    let queryString = "";
-                    if (appendMode) {
-                        queryString = `?sort=Date,desc&offset=${Math.trunc(imagesCount / appendCount)}&limit=${appendCount}`;
-                        imagesCount += appendCount;
-                    } else {
-                        queryString = `?sort=Date,desc&offset=${0}&limit=${imagesCount}`;
-                    }
-                    return queryString;
-                }
-                GET_ALL(refreshimagesList, error, prepareQueryString());
-            }
-            function refreshimagesList(images, ETag) {
-                function insertIntoImageList(image) {
+                    <label for="decription_input">Description</label>
+                    <textarea id="description_input" class="form-control" required></textarea>
 
-                    $("#imagesList").append(
-                        $(` 
-                                <div class='imageLayout'>
-                                    <div class='imageHeader'>
-                                        <div class="imageTitle">${image.Title}</div>
-                                        <div    class="cmd editCmd  fa fa-pencil-square" 
-                                                imageid="${image.Id}" 
-                                                title="Editer ${image.Title}" 
-                                                data-toggle="tooltip">
-                                        </div>
-                                        <div    class="cmd deleteCmd fa fa-window-close" 
-                                                imageid="${image.Id}" 
-                                                title="Effacer ${image.Title}" 
-                                                data-toggle="tooltip">
-                                        </div>
-                                    </div>
-                                    <a href="${image.OriginalURL}" target="_blank">
-                                        <div    class='image' 
-                                                style="background-image:url('${image.ThumbnailURL}')">
-                                        </div>
-                                    </a>
-                                    <div class="imageDate">${convertToFrenchDate(parseInt(image.Date))}</div>
-                                </div>
-                        `)
-                    );
-                }
+                    <label for="image">Image</label>
+                    <div id='image' class='ImageUploader' defaultImage='images/No_Image.png'
+                        waitingImage='images/writing.gif'>
+                    </div>
+                    <div class="note">Cliquez-Déposez une image</div>
+                </form>
+            </div>
+            <div id="confirmDeleteDlg">
+                <span id="confirmationMessage"></span>
+            </div>
+            <div id="errorDlg">
+                <span id="errorMessage"></span>
+            </div>
+        </div>
+
+        <div id="login_header">
+            <div id="registerDlg" class="scrollContainer">
+                <form id="registerForm">
+                    <label for="name_input">Nom d'usager</label>
+                    <input type="text" id="register_name_input" name="name_input" class="form-control" required>
+
+                    <label for="email_input">Courriel</label>
+                    <input type="email" id="register_email_input" name="email_input" class="form-control" required>
+
+                    <div id="register_password_match_error" class="error-message"></div>
+
+                    <label for="password_input">Mot de passe</label>
+                    <input type="text" id="register_password_input" name="password_input" class="form-control" required>
+
+                    <label for="confirm_input">Confirmation</label>
+                    <input type="text" id="register_confirm_input" name="confirm_input" class="form-control" required>
+
+                    <label for="imageInput">Image</label>
+                    <div id='imageInput' class="ImageUploader" defaultImage="images/No_Avatar.png" waitingimage="images/writing.gif"></div>
+                    <div class="note">Cliquez-Déposez une image</div>
+                </form>
+            </div>
+            
+            <div id="registerDlgOkBtn">
+                <span id="confirmationMessage"></span>
+            </div>
+            <div id="errorDlg">
+                <span id="errorMessage"></span>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="js/customValidation.js"></script>
+    <script src="js/imageUploader.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/date.js"></script>
+    <script defer>
+        const periodicRefreshPeriod = 15;
+        let holdCheckETag = false;
+        let currentETag = "";
+        let createMode = true;
+        let searchCategory = "";
+        let searchTitle = "";
+        let hideSearchBar = true;
+        let imageIdToDelete = 0; // used by confirmDeleteDlg
+        let selectedCategory = "";
+        let imagesCount = 50;
+        let appendCount = 3;
+        let previousScrollPosition = 0;
+        let appendMode = false;
+
+        init_UI();
+        HEAD(checkETag, error);
+        setInterval(() => { HEAD(checkETag, error) }, periodicRefreshPeriod * 1000);
+
+        function checkETag(ETag) {
+            if (!holdCheckETag && ETag != currentETag) {
                 currentETag = ETag;
-                previousScrollPosition = $(".scrollContainer").scrollTop();
-                if (!appendMode) $("#imagesList").empty();
+                getImagesList();
+            }
+        }
 
-                if (appendMode && images.length == 0)
-                    imagesCount -= appendCount;
-
-                for (let image of images) {
-                    insertIntoImageList(image);
+        function getImagesList(refresh = true) {
+            appendMode = !refresh;
+            function prepareQueryString() {
+                let queryString = "";
+                if (appendMode) {
+                    queryString = `?sort=Date,desc&offset=${Math.trunc(imagesCount / appendCount)}&limit=${appendCount}`;
+                    imagesCount += appendCount;
+                } else {
+                    queryString = `?sort=Date,desc&offset=${0}&limit=${imagesCount}`;
                 }
-
-                $(".scrollContainer").scrollTop(previousScrollPosition);
-                $(".editCmd").off();
-                $(".deleteCmd").off();
-                $(".showMore").off();
-                $(".editCmd").click(e => { editimage(e) });
-                $(".deleteCmd").click(e => { deleteimage(e) });
-
-                $('[data-toggle="tooltip"]').tooltip();
+                return queryString;
             }
+            GET_ALL(refreshimagesList, error, prepareQueryString());
+        }
+        function refreshimagesList(images, ETag) {
+            function insertIntoImageList(image) {
 
-            function error(status) {
-                let errorMessage = "";
-                switch (status) {
-                    case 0:
-                        errorMessage = "Le service ne répond pas";
-                        break;
-                    case 401:
-                        errorMessage = "Requête non autorisée";
-                        break;
-                    case 400:
-                    case 422:
-                        errorMessage = "Requête invalide";
-                        break;
-                    case 404:
-                        errorMessage = "Service ou données introuvables";
-                        break;
-                    case 409:
-                        errorMessage = "Conflits de données: Hyperlien existe déjà";
-                        break;
-                    case 500:
-                        errorMessage = "Erreur interne du service";
-                        break;
-                    default:
-                        errorMessage = "Une erreur est survenue";
-                        break;
-                }
-                $("#errorMessage").text(errorMessage);
-                $("#errorDlg").dialog('open');
-            }
-
-            function loginForm() {
-                holdCheckETag = true;
-                resetLoginForm();
-                $("#loginDlg").dialog('option', 'title', "Se Connecter");
-                $("#loginDlg").dialog('open');
-            }
-
-            function newImage() {
-                holdCheckETag = true;
-                createMode = true;
-                resetimageForm();
-                ImageUploader.imageRequired('image', true);
-                $("#imageDlg").dialog('option', 'title', "Ajout d'image");
-                $("#imageDlgOkBtn").text("Ajouter");
-                $("#imageDlg").dialog('open');
-            }
-            function editimage(e) {
-                holdCheckETag = true;
-                createMode = false;
-                GET_ID(e.target.getAttribute("imageid"), imageToForm, error);
-                holdCheckETag = true;
-                ImageUploader.imageRequired('image', false);
-                $("#imageDlg").dialog('option', 'title', "Modification d'image");
-                $("#imageDlgOkBtn").text("Modifier");
-                $("#imageDlg").dialog('open');
-            }
-            function deleteimage(e) {
-                holdCheckETag = true;
-                imageIdToDelete = e.target.getAttribute("imageid")
-                GET_ID(
-                    imageIdToDelete,
-                    image => {
-                        $("#confirmationMessage").html("Voulez-vous vraiment effacer l'image <br><b>" + image.Title + "</b>?")
-                    },
-                    error
+                $("#imagesList").append(
+                    $(` 
+                            <div class='imageLayout'>
+                                <div class='imageHeader'>
+                                    <div class="imageTitle">${image.Title}</div>
+                                    <div    class="cmd editCmd  fa fa-pencil-square" 
+                                            imageid="${image.Id}" 
+                                            title="Editer ${image.Title}" 
+                                            data-toggle="tooltip">
+                                    </div>
+                                    <div    class="cmd deleteCmd fa fa-window-close" 
+                                            imageid="${image.Id}" 
+                                            title="Effacer ${image.Title}" 
+                                            data-toggle="tooltip">
+                                    </div>
+                                </div>
+                                <a href="${image.OriginalURL}" target="_blank">
+                                    <div    class='image' 
+                                            style="background-image:url('${image.ThumbnailURL}')">
+                                    </div>
+                                </a>
+                                <div class="imageDate">${convertToFrenchDate(parseInt(image.Date))}</div>
+                            </div>
+                        `)
                 );
-                holdCheckETag = true;
-                $("#confirmDlg").dialog('option', 'title', "Retrait d'image'...");
-                $("#confirmDeleteDlgOkBtn").text("Effacer");
-                $("#confirmDeleteDlg").dialog('open');
             }
-            function resetimageForm() {
-                $("#Id_input").val("0");
-                $("#GUID_input").val("");
-                $("#date_input").val(Date.now());
-                $("#title_input").val("");
-                $("#description_input").val("");
-                ImageUploader.resetImage('image');
-            }
-            function imageFromForm() {
-                if ($("#imageForm")[0].checkValidity()) {
-                    let image = {
-                        Id: parseInt($("#Id_input").val()),
-                        GUID: $("#GUID_input").val(),
-                        Title: $("#title_input").val(),
-                        Description: $("#description_input").val(),
-                        ImageData: ImageUploader.getImageData('image'),
-                        Date: parseInt($("#date_input").val())
-                    };
-                    return image;
-                } else {
-                    $("#imageForm")[0].reportValidity()
-                }
-                return false;
-            }
-            function imageToForm(image) {
-                $("#Id_input").val(image.Id);
-                $("#GUID_input").val(image.GUID);
-                $("#date_input").val(image.Date);
-                //$("#date_input").val(Date.now());
-                $("#title_input").val(image.Title);
-                $("#description_input").val(image.Description);
-                ImageUploader.setImage('image', image.OriginalURL);
-            }
-            function resetLoginForm() {
-                $("#email_input").val("");
-                $("#password_input").val("");
-            }
-            function loginFromForm() {
-                // A modifier *********************************************************************
-                if ($("#loginForm")[0].checkValidity()) {
-                    let loginInfo = {
-                        Email: $("#email_input").val(),
-                        Password: $("#password_input").val()
-                    };
-                    return loginInfo;
-                } else {
-                    $("#loginForm")[0].reportValidity()
-                }
-                return false;
-            }
-            function logout(){
-                POST_LOGOUT(JSON.parse(window.sessionStorage.getItem("access_token")).UserId);
+            currentETag = ETag;
+            previousScrollPosition = $(".scrollContainer").scrollTop();
+            if (!appendMode) $("#imagesList").empty();
+
+            if (appendMode && images.length == 0)
+                imagesCount -= appendCount;
+
+            for (let image of images) {
+                insertIntoImageList(image);
             }
 
-            function init_UI() {
-                /* Show a login button if not connected and his name if connected */
-                console.log(window.sessionStorage);
+            $(".scrollContainer").scrollTop(previousScrollPosition);
+            $(".editCmd").off();
+            $(".deleteCmd").off();
+            $(".showMore").off();
+            $(".editCmd").click(e => { editimage(e) });
+            $(".deleteCmd").click(e => { deleteimage(e) });
 
-                if(!window.sessionStorage.access_token || window.sessionStorage.access_token === 'undefined'){  
-                   $("#login_header").append(
-                        $(` 
+            $('[data-toggle="tooltip"]').tooltip();
+        }
+
+        function error(status) {
+            let errorMessage = "";
+            switch (status) {
+                case 0:
+                    errorMessage = "Le service ne répond pas";
+                    break;
+                case 401:
+                    errorMessage = "Requête non autorisée";
+                    break;
+                case 400:
+                case 422:
+                    errorMessage = "Requête invalide";
+                    break;
+                case 404:
+                    errorMessage = "Service ou données introuvables";
+                    break;
+                case 409:
+                    errorMessage = "Conflits de données: Hyperlien existe déjà";
+                    break;
+                case 500:
+                    errorMessage = "Erreur interne du service";
+                    break;
+                default:
+                    errorMessage = "Une erreur est survenue";
+                    break;
+            }
+            $("#errorMessage").text(errorMessage);
+            $("#errorDlg").dialog('open');
+        }
+
+        function loginForm() {
+            holdCheckETag = true;
+            resetLoginForm();
+            $("#loginDlg").dialog('option', 'title', "Se Connecter");
+            $("#loginDlg").dialog('open');
+        }
+        function registerForm() {
+            holdCheckETag = true;
+            createMode = true;
+            resetRegisterForm();
+            ImageUploader.imageRequired('image', true);
+            $("#registerDlg").dialog('option', 'title', "S'inscrire");
+            $("#registerDlg").dialog('open');
+        }
+
+        function newImage() {
+            holdCheckETag = true;
+            createMode = true;
+            resetimageForm();
+            ImageUploader.imageRequired('image', true);
+            $("#imageDlg").dialog('option', 'title', "Ajout d'image");
+            $("#imageDlgOkBtn").text("Ajouter");
+            $("#imageDlg").dialog('open');
+        }
+        function editimage(e) {
+            holdCheckETag = true;
+            createMode = false;
+            GET_ID(e.target.getAttribute("imageid"), imageToForm, error);
+            holdCheckETag = true;
+            ImageUploader.imageRequired('image', false);
+            $("#imageDlg").dialog('option', 'title', "Modification d'image");
+            $("#imageDlgOkBtn").text("Modifier");
+            $("#imageDlg").dialog('open');
+        }
+        function deleteimage(e) {
+            holdCheckETag = true;
+            imageIdToDelete = e.target.getAttribute("imageid")
+            GET_ID(
+                imageIdToDelete,
+                image => {
+                    $("#confirmationMessage").html("Voulez-vous vraiment effacer l'image <br><b>" + image.Title + "</b>?")
+                },
+                error
+            );
+            holdCheckETag = true;
+            $("#confirmDlg").dialog('option', 'title', "Retrait d'image'...");
+            $("#confirmDeleteDlgOkBtn").text("Effacer");
+            $("#confirmDeleteDlg").dialog('open');
+        }
+        function resetimageForm() {
+            $("#Id_input").val("0");
+            $("#GUID_input").val("");
+            $("#date_input").val(Date.now());
+            $("#title_input").val("");
+            $("#description_input").val("");
+            ImageUploader.resetImage('image');
+        }
+        function imageFromForm() {
+            if ($("#imageForm")[0].checkValidity()) {
+                let image = {
+                    Id: parseInt($("#Id_input").val()),
+                    GUID: $("#GUID_input").val(),
+                    Title: $("#title_input").val(),
+                    Description: $("#description_input").val(),
+                    ImageData: ImageUploader.getImageData('image'),
+                    Date: parseInt($("#date_input").val())
+                };
+                return image;
+            } else {
+                $("#imageForm")[0].reportValidity()
+            }
+            return false;
+        }
+        function imageToForm(image) {
+            $("#Id_input").val(image.Id);
+            $("#GUID_input").val(image.GUID);
+            $("#date_input").val(image.Date);
+            //$("#date_input").val(Date.now());
+            $("#title_input").val(image.Title);
+            $("#description_input").val(image.Description);
+            ImageUploader.setImage('image', image.OriginalURL);
+        }
+        // fonction pour le dialogue du login
+        function resetLoginForm() {
+            $("#email_input").val("");
+            $("#password_input").val("");
+        }
+        function loginFromForm() {
+            // A modifier *********************************************************************
+            if ($("#loginForm")[0].checkValidity()) {
+                let loginInfo = {
+                    Email: $("#email_input").val(),
+                    Password: $("#password_input").val()
+                };
+                return loginInfo;
+            } else {
+                $("#loginForm")[0].reportValidity()
+            }
+            return false;
+        }
+        function logout() {
+            POST_LOGOUT(JSON.parse(window.sessionStorage.getItem("access_token")).UserId);
+        }
+        // fonction pour le dialogue d'inscription
+        function resetRegisterForm() {
+            // nos champ pour le form
+            $("#name_input").val("");
+            $("#email_input").val("");
+            $("#password_input").val("");
+        }
+        function RegisterFromForm() {
+            // A modifier *********************************************************************
+            if ($("#registerForm")[0].checkValidity()) {
+                let registerInfo = {
+                    Name: $("#register_name_input").val(),
+                    Email: $("#register_email_input").val(),
+                    Password: $("#register_password_input").val(),
+                    Avatar: ImageUploader.getImageData('imageInput')
+                };
+                return registerInfo;
+            } else {
+                $("#registerForm")[0].reportValidity()
+            }
+            return false;
+        }
+
+        function init_UI() {
+            /* Show a login button if not connected and his name if connected */
+            console.log(window.sessionStorage);
+            if (!window.sessionStorage.access_token || window.sessionStorage.access_token === 'undefined') {
+                $("#login_header").append(
+                    $(` 
                         <div id="loginDlg">
                             <form id="loginForm">
-                                <label for="title_input">Nom d'utilisateur</label>
+                                <label for="title_input">Email</label>
                                 <input type="email" id="email_input" name="email_input" class="form-control" required>
 
                                 <label for="decription_input">Mot de passe</label>
@@ -360,166 +399,215 @@
                         <div id="errorDlg">
                             <span id="errorMessage"></span>
                         </div>`)
-                    ); 
+                );
 
-                    $("#headerLayout").append(
-                        $(
-                            '<span class="cmd fa fa-user-circle" id="loginCmd" title="Se Connecter" data-toggle="tooltip"></span>'
-                        )
-                    );
-                }
-                else {
+                $("#headerLayout").append(
+                    $(
+                        '<span class="cmd fa fa-user-circle" id="loginCmd" title="Se Connecter" data-toggle="tooltip"></span>'
+                    )
+                );
+            }
+            else {
 
 
-                    $("#headerLayout").append(
-                        $(
-                            '<span class="cmd fa fa-power-off" id="loginCmd" title="Se Déconnecter" data-toggle="tooltip" onClick="logout()"></span>'
-                        ),
+                $("#headerLayout").append(
+                    $(
+                        '<span class="cmd fa fa-power-off" id="loginCmd" title="Se Déconnecter" data-toggle="tooltip" onClick="logout()"></span>'
+                    ),
 
-                        $(
-                            '<div></div>'
-                        )
-                    );
-                }
-                
-                $("#newImageCmd").click(newImage);
-                $("#loginCmd").click(loginForm);
-
-                $("#imageDlg").dialog({
-                    title: "...",
-                    autoOpen: false,
-                    modal: true,
-                    show: { effect: 'fade', speed: 400 },
-                    hide: { effect: 'fade', speed: 400 },
-                    width: 640,
-                    minWidth: 640,
-                    maxWidth: 640,
-                    height: 780,
-                    minHeight: 780,
-                    maxHeight: 780,
-                    position: { my: "top", at: "top", of: window },
-                    buttons: [{
-                        id: "imageDlgOkBtn",
-                        text: "Title will be changed dynamically",
-                        click: function () {
-                            let image = imageFromForm();
-                            if (image) {
-                                if (createMode) {
-                                    POST(image, getImagesList, error);
-                                    $(".scrollContainer").scrollTop(0);
-                                }
-                                else
-                                    PUT(image, getImagesList, error);
-                                resetimageForm();
-                                holdCheckETag = false;
-                                $(this).dialog("close");
-                            }
-                        }
-                    },
-                    {
-                        text: "Annuler",
-                        click: function () {
-                            holdCheckETag = false;
-                            $(this).dialog("close");
-                        }
-                    }]
-                });
-
-                $("#confirmDeleteDlg").dialog({
-                    title: "Attention!",
-                    autoOpen: false,
-                    modal: true,
-                    show: { effect: 'fade', speed: 400 },
-                    hide: { effect: 'fade', speed: 400 },
-                    width: 500, minWidth: 500, maxWidth: 500,
-                    height: 230, minHeight: 230, maxHeight: 230,
-                    position: { my: "top", at: "top", of: window },
-                    buttons: [{
-                        id: "confirmDeleteDlgOkBtn",
-                        text: "Oui",
-                        click: function () {
-                            holdCheckETag = false;
-                            if (imageIdToDelete)
-                                DELETE(imageIdToDelete, getImagesList, error);
-                            imageIdToDelete = 0;
-                            $(this).dialog("close");
-                        }
-                    },
-                    {
-                        text: "Annuler",
-                        click: function () {
-                            holdCheckETag = false;
-                            imageIdToDelete = 0;
-                            $(this).dialog("close");
-                        }
-                    }]
-                });
-
-                $("#errorDlg").dialog({
-                    title: "Erreur...",
-                    autoOpen: false,
-                    modal: true,
-                    show: { effect: 'fade', speed: 400 },
-                    hide: { effect: 'fade', speed: 400 },
-                    width: 500, minWidth: 500, maxWidth: 500,
-                    height: 230, minHeight: 230, maxHeight: 230,
-                    position: { my: "top", at: "top", of: window },
-                    buttons: [{
-                        text: "Fermer",
-                        click: function () {
-                            holdCheckETag = false;
-                            imageIdToDelete = 0;
-                            $(this).dialog("close");
-                        }
-                    }]
-                });
-                
-                $("#loginDlg").dialog({
-                    title: "...",
-                    autoOpen: false,
-                    modal: true,
-                    show: { effect: 'fade', speed: 400 },
-                    hide: { effect: 'fade', speed: 400 },
-                    width: 640,
-                    minWidth: 640,
-                    maxWidth: 640,
-                    height: 350,
-                    minHeight: 350,
-                    maxHeight: 350,
-                    position: { my: "top", at: "top", of: window },
-                    buttons: [{
-                        id: "loginDlgOkBtn",
-                        text: "Se connecter",
-                        click: function () {
-                            let loginInfo = loginFromForm();
-                            if (loginInfo) {
-                                POST_LOGIN(loginInfo, error);
-                                $(".scrollContainer").scrollTop(0);
-                                resetLoginForm();
-                                holdCheckETag = false;
-                                $(this).dialog("close");
-                            }
-                        }
-                    },
-                    {
-                        text: "Annuler",
-                        click: function () {
-                            holdCheckETag = false;
-                            $(this).dialog("close");
-                        }
-                    }]
-                });
-        
-
-                $(".scrollContainer").scroll(function () {
-                    if ($(".scrollContainer").scrollTop() + $(".scrollContainer").innerHeight() >= $("#imagesList").height()) {
-                        getImagesList(false);
-                    }
-                });
+                    $(
+                        '<div></div>'
+                    )
+                );
             }
 
-        </script>
+            $("#newImageCmd").click(newImage);
+            $("#loginCmd").click(loginForm);
+            // ajouter same thing for bttn sinscrire
 
-    </body>
+            $("#imageDlg").dialog({
+                title: "...",
+                autoOpen: false,
+                modal: true,
+                show: { effect: 'fade', speed: 400 },
+                hide: { effect: 'fade', speed: 400 },
+                width: 640,
+                minWidth: 640,
+                maxWidth: 640,
+                height: 780,
+                minHeight: 780,
+                maxHeight: 780,
+                position: { my: "top", at: "top", of: window },
+                buttons: [{
+                    id: "imageDlgOkBtn",
+                    text: "Title will be changed dynamically",
+                    click: function () {
+                        let image = imageFromForm();
+                        if (image) {
+                            if (createMode) {
+                                POST(image, getImagesList, error);
+                                $(".scrollContainer").scrollTop(0);
+                            }
+                            else
+                                PUT(image, getImagesList, error);
+                            resetimageForm();
+                            holdCheckETag = false;
+                            $(this).dialog("close");
+                        }
+                    }
+                },
+                {
+                    text: "Annuler",
+                    click: function () {
+                        holdCheckETag = false;
+                        $(this).dialog("close");
+                    }
+                }]
+            });
+
+            $("#confirmDeleteDlg").dialog({
+                title: "Attention!",
+                autoOpen: false,
+                modal: true,
+                show: { effect: 'fade', speed: 400 },
+                hide: { effect: 'fade', speed: 400 },
+                width: 500, minWidth: 500, maxWidth: 500,
+                height: 230, minHeight: 230, maxHeight: 230,
+                position: { my: "top", at: "top", of: window },
+                buttons: [{
+                    id: "confirmDeleteDlgOkBtn",
+                    text: "Oui",
+                    click: function () {
+                        holdCheckETag = false;
+                        if (imageIdToDelete)
+                            DELETE(imageIdToDelete, getImagesList, error);
+                        imageIdToDelete = 0;
+                        $(this).dialog("close");
+                    }
+                },
+                {
+                    text: "Annuler",
+                    click: function () {
+                        holdCheckETag = false;
+                        imageIdToDelete = 0;
+                        $(this).dialog("close");
+                    }
+                }]
+            });
+
+            $("#errorDlg").dialog({
+                title: "Erreur...",
+                autoOpen: false,
+                modal: true,
+                show: { effect: 'fade', speed: 400 },
+                hide: { effect: 'fade', speed: 400 },
+                width: 500, minWidth: 500, maxWidth: 500,
+                height: 230, minHeight: 230, maxHeight: 230,
+                position: { my: "top", at: "top", of: window },
+                buttons: [{
+                    text: "Fermer",
+                    click: function () {
+                        holdCheckETag = false;
+                        imageIdToDelete = 0;
+                        $(this).dialog("close");
+                    }
+                }]
+            });
+
+            $("#loginDlg").dialog({
+                title: "...",
+                autoOpen: false,
+                modal: true,
+                show: { effect: 'fade', speed: 400 },
+                hide: { effect: 'fade', speed: 400 },
+                width: 640,
+                minWidth: 640,
+                maxWidth: 640,
+                height: 350,
+                minHeight: 350,
+                maxHeight: 350,
+                position: { my: "top", at: "top", of: window },
+                buttons: [{
+                    id: "loginDlgOkBtn",
+                    text: "Se connecter",
+                    click: function () {
+                        let loginInfo = loginFromForm();
+                        if (loginInfo) {
+                            POST_LOGIN(loginInfo, error);
+                            $(".scrollContainer").scrollTop(0);
+                            resetLoginForm();
+                            holdCheckETag = false;
+                            $(this).dialog("close");
+                        }
+                    }
+                }, {
+                    id: "registerAccountBtn",
+                    text: "S'inscrire",
+                    click: function () {
+                        resetRegisterForm();
+                        $(this).dialog("close");
+                        registerForm();
+                    }
+                },
+                {
+                    text: "Annuler",
+                    click: function () {
+                        holdCheckETag = false;
+                        $(this).dialog("close");
+                    }
+                }]
+            });
+            $("#registerDlg").dialog({
+                title: "...",
+                autoOpen: false,
+                modal: true,
+                show: { effect: 'fade', speed: 400 },
+                hide: { effect: 'fade', speed: 400 },
+                width: 800,
+                minWidth: 800,
+                maxWidth: 800,
+                height: 500,
+                minHeight: 500,
+                maxHeight: 500,
+                position: { my: "top", at: "top", of: window },
+                buttons: [{
+                    id: "registerDlgOkBtn",
+                    text: "S'inscrire",
+                    click: function () {
+                        let registerInfo = RegisterFromForm();
+                        if (registerInfo) {
+                            if($("#register_password_input").val() == $("#register_confirm_input").val()){
+                                POST_REGISTER(registerInfo, error);
+                                $(".scrollContainer").scrollTop(0);
+                                resetRegisterForm();
+                                holdCheckETag = false;
+                                $(this).dialog("close");
+                            }
+                            else {
+                                $(".scrollContainer").scrollTop(0);
+                                $("#register_password_match_error").html("<br> Les mots de passe ne correspondent pas <br>");
+                            }
+                        }
+                    }
+                },
+                {
+                    text: "Annuler",
+                    click: function () {
+                        holdCheckETag = false;
+                        $(this).dialog("close");
+                    }
+                }]
+            });
+
+            $(".scrollContainer").scroll(function () {
+                if ($(".scrollContainer").scrollTop() + $(".scrollContainer").innerHeight() >= $("#imagesList").height()) {
+                    getImagesList(false);
+                }
+            });
+        }
+
+    </script>
+
+</body>
 
 </html>

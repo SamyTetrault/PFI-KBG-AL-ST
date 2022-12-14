@@ -233,3 +233,7 @@ div2,
 span2 {
     border: 1px solid red;
 }
+
+.error-message {
+    color: red;
+}
