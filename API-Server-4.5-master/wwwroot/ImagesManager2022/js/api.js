@@ -94,7 +94,7 @@ function POST_LOGOUT(userId){
         error: () => {console.log("Impossible de se connecter");}
     });
 }
-// two fonctions for register : one to create the account an one to link the image
+// two fonctions for register : one to create the account an one to link the image 
 function POST_REGISTER(registerInfo, errorCallBack) {
     $.ajax({
         url: baseURL + "accounts/register",
@@ -102,13 +102,19 @@ function POST_REGISTER(registerInfo, errorCallBack) {
         contentType: 'application/json',
         data: JSON.stringify(registerInfo),
         success: (tokenInfo) => {
-            window.sessionStorage.setItem("access_token", JSON.stringify(tokenInfo));
-            window.location.reload();
         },
         error: function (jqXHR) {
             errorCallBack(jqXHR.status)
         }
     });
 }
-
+function GET_VERIFY(verifyInfo, errorCallBack) {
+    $.ajax({        
+        url: baseURL + "account/verify?id=" + verifyInfo.Id + "&code=" + verifyInfo.Code,
+        type: 'GET',
+        contentType: 'application/json',
+        success: data => { window.location.reload(); },
+        error: function (jqXHR) { errorCallBack(jqXHR.status) }
+    });     
+}
 //  url: baseURL + "accounts/logout/" + userId,

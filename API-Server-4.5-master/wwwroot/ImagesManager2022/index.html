@@ -123,6 +123,21 @@
             <div id="errorDlg">
                 <span id="errorMessage"></span>
             </div>
+            
+            <div id="verificationDlg" >
+                <form id="verificationForm">
+                    <div class="verification-info">Consulter votre boîte de courriel pour connaître votre code de vérification et inscriver-le ci-dessous</div>
+                    <label for="name_input">Code de vérification</label>
+                    <input type="number" id="code_input" name="code_input" class="form-control" required>
+                </form>
+            </div>
+
+            <div id="verifyDlgOkBtn">
+                <span id="confirmationMessage"></span>
+            </div>
+            <div id="errorDlg">
+                <span id="errorMessage"></span>
+            </div>
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
@@ -363,7 +378,6 @@
             $("#password_input").val("");
         }
         function RegisterFromForm() {
-            // A modifier *********************************************************************
             if ($("#registerForm")[0].checkValidity()) {
                 let registerInfo = {
                     Id: 0,
@@ -378,6 +392,23 @@
                 $("#registerForm")[0].reportValidity()
             }
             return false;
+        }
+        // fonction pour la verification
+        function VerifyFromForm() {
+            if ($("#verificationForm")[0].checkValidity()) {
+                let verifyInfo = {
+                    Id: JSON.parse(window.sessionStorage.getItem("access_token")).Id,
+                    Code: $("#code_input").val(),
+                };
+                return verifyInfo;
+            } else {
+                $("#verificationForm")[0].reportValidity()
+            }
+            return false;
+        }
+        function resetVerificationForm() {
+            // nos champ pour le form
+            $("#code_input").val("");
         }
 
         function init_UI() {
@@ -410,8 +441,6 @@
                 );
             }
             else {
-
-
                 $("#headerLayout").append(
                     $(
                         '<span class="cmd fa fa-power-off" id="loginCmd" title="Se Déconnecter" data-toggle="tooltip" onClick="logout()"></span>'
@@ -422,11 +451,9 @@
                     )
                 );
             }
-
             $("#newImageCmd").click(newImage);
             $("#loginCmd").click(loginForm);
             // ajouter same thing for bttn sinscrire
-
             $("#imageDlg").dialog({
                 title: "...",
                 autoOpen: false,
@@ -466,7 +493,6 @@
                     }
                 }]
             });
-
             $("#confirmDeleteDlg").dialog({
                 title: "Attention!",
                 autoOpen: false,
@@ -496,7 +522,6 @@
                     }
                 }]
             });
-
             $("#errorDlg").dialog({
                 title: "Erreur...",
                 autoOpen: false,
@@ -515,7 +540,6 @@
                     }
                 }]
             });
-
             $("#loginDlg").dialog({
                 title: "...",
                 autoOpen: false,
@@ -600,6 +624,41 @@
                     }
                 }]
             });
+            $("#verificationDlg").dialog({
+                title: "Vérification de courriel",
+                autoOpen: (typeof(window.sessionStorage.access_token) != "undefined" && JSON.parse(window.sessionStorage.getItem("access_token")).VerifyCode != "verified"),
+                modal: true,
+                show: { effect: 'fade', speed: 400 },
+                hide: { effect: 'fade', speed: 400 },
+                width: 500,
+                minWidth: 500,
+                maxWidth: 500,
+                height: 350,
+                minHeight: 350,
+                maxHeight: 350,
+                position: { my: "top", at: "top", of: window },
+                buttons: [{
+                    id: "verificationDlgOkBtn",
+                    text: "Envoyer",
+                    click: function (){
+                        let verifyinfo = VerifyFromForm();
+                        console.log(verifyinfo);
+                        GET_VERIFY(verifyinfo, error);
+                        holdCheckETag = false;
+                        resetVerificationForm();
+                        $(this).dialog("close");
+                    }
+                },
+                {
+                    text: "Annuler",
+                    click: function () {
+                    logout();
+                    holdCheckETag = false;
+                    $(this).dialog("close");
+                }
+                }]
+            });
+            
 
             $(".scrollContainer").scroll(function () {
                 if ($(".scrollContainer").scrollTop() + $(".scrollContainer").innerHeight() >= $("#imagesList").height()) {
