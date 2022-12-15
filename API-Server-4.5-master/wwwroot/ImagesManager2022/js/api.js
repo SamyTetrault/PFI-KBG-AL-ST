@@ -104,6 +104,7 @@ function POST_REGISTER(registerInfo, errorCallBack) {
         success: (tokenInfo) => {
             window.sessionStorage.setItem("access_token", JSON.stringify(tokenInfo));
             GET_USER(JSON.parse(window.sessionStorage.getItem("access_token")).Id);
+            POST_LOGOUT
             window.location.reload();
         },
         error: function (jqXHR) {
@@ -117,7 +118,7 @@ function GET_VERIFY(verifyInfo, errorCallBack) {
         type: 'GET',
         contentType: 'application/json',
         success: data => { 
-            GET_USER(JSON.parse(window.sessionStorage.getItem("access_token")).Id);
+            POST_LOGOUT(JSON.parse(window.sessionStorage.getItem("access_token")).Id);
             window.location.reload(); 
         },
         error: function (jqXHR) { errorCallBack(jqXHR.status) }
