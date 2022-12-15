@@ -242,4 +242,5 @@ span2 {
     color: gray;
     display: flex;
     padding: 2rem;
+    text-align: center;
 }

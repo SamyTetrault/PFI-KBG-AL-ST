@@ -103,6 +103,7 @@ function POST_REGISTER(registerInfo, errorCallBack) {
         data: JSON.stringify(registerInfo),
         success: (tokenInfo) => {
             window.sessionStorage.setItem("access_token", JSON.stringify(tokenInfo));
+            GET_USER(JSON.stringify(tokenInfo).Id);
             window.location.reload();
         },
         error: function (jqXHR) {
@@ -115,7 +116,28 @@ function GET_VERIFY(verifyInfo, errorCallBack) {
         url: baseURL + "accounts/verify?id=" + verifyInfo.Id + "&code=" + verifyInfo.Code,
         type: 'GET',
         contentType: 'application/json',
-        success: data => { window.location.reload(); },
+        success: data => { 
+            window.location.reload(); 
+        },
+        error: function (jqXHR) { errorCallBack(jqXHR.status) }
+    });
+}
+function PUT_MODIFY_USER(userInfo, errorCallBack) {
+    $.ajax({
+        url: baseURL + "accounts/modify/" + userInfo.Id,
+        type: 'PUT',
+        contentType: 'application/json',
+        headers: {Authorization: "Bearer " + JSON.parse(window.sessionStorage.getItem("access_token")).Access_token },
+        data: JSON.stringify(userInfo),
+        success: (tokenInfo) => {
+            GET_USER(userInfo.Id);
+            let user = {
+                Email : JSON.parse(window.sessionStorage.getItem("user_info")).Email,
+                Password : JSON.parse(window.sessionStorage.getItem("user_info")).Password
+            };
+            POST_LOGIN(user,errorCallBack);
+            window.location.reload();
+        },
         error: function (jqXHR) { errorCallBack(jqXHR.status) }
     });
 }

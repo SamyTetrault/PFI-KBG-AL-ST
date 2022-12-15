@@ -54,8 +54,7 @@
                         D
                     </span>
                 </div>
-                <span class="cmd fa fa-plus-square" id="newImageCmd" title="Ajouter un image"
-                    data-toggle="tooltip"></span>
+                <span class="cmd fa fa-plus-square" id="newImageCmd" title="Ajouter un image" data-toggle="tooltip"></span>
                 <!-- <span class="cmd fa fa-user-circle" id="loginCmd" title="Se Connecter" data-toggle="tooltip"></span> -->
                 <!-- power-off (for logout) -->
             </div>
@@ -133,6 +132,35 @@
             </div>
 
             <div id="verifyDlgOkBtn">
+                <span id="confirmationMessage"></span>
+            </div>
+            <div id="errorDlg">
+                <span id="errorMessage"></span>
+            </div>
+
+            <div id="modifyDlg" class="scrollContainer">
+                <form id="modifyForm">
+                    <label for="name_input">Nom d'usager</label>
+                    <input type="text" id="modify_name_input" name="name_input" class="form-control" required>
+
+                    <label for="email_input">Courriel</label>
+                    <input type="email" id="modify_email_input" name="email_input" class="form-control" required>
+
+                    <div id="modify_password_match_error" class="error-message"></div>
+
+                    <label for="password_input">Mot de passe</label>
+                    <input type="text" id="modify_password_input" name="password_input" class="form-control">
+
+                    <label for="confirm_input">Confirmation</label>
+                    <input type="text" id="modify_confirm_input" name="confirm_input" class="form-control">
+
+                    <label for="modifyImageInput">Image</label>
+                    <div id='modifyImageInput' class="ImageUploader" defaultImage="images/No_Avatar.png" waitingimage="images/writing.gif"></div>
+                    <div class="note">Cliquez-Déposez une image</div>
+                </form>
+            </div>
+            
+            <div id="modifyDlgOkBtn">
                 <span id="confirmationMessage"></span>
             </div>
             <div id="errorDlg">
@@ -282,6 +310,15 @@
             $("#registerDlg").dialog('open');
         }
 
+        function modifyForm() {
+            holdCheckETag = true;
+            createMode = true;
+            resetModifyForm();
+            ImageUploader.imageRequired('image', true);
+            $("#modifyDlg").dialog('option', 'title', "Modifier");
+            $("#modifyDlg").dialog('open');
+        }
+
         function newImage() {
             holdCheckETag = true;
             createMode = true;
@@ -368,7 +405,7 @@
             return false;
         }
         function logout() {
-            POST_LOGOUT(JSON.parse(window.sessionStorage.getItem("access_token")).UserId);
+            POST_LOGOUT(JSON.parse(window.sessionStorage.getItem("user_info")).UserId);
         }
         // fonction pour le dialogue d'inscription
         function resetRegisterForm() {
@@ -393,11 +430,37 @@
             }
             return false;
         }
+        function resetModifyForm() {
+            // nos champ pour le form
+            $("#modify_name_input").val(JSON.parse(window.sessionStorage.getItem("user_info")).Name);
+            $("#modify_email_input").val(JSON.parse(window.sessionStorage.getItem("user_info")).Email);
+            $("#modify_password_input").val("");
+            $("#modify_confirm_input").val("");
+            ImageUploader.setImage('modifyImageInput', JSON.parse(window.sessionStorage.getItem("user_info")).AvatarURL);
+            //$("#modify_image_input").src(JSON.parse(window.sessionStorage.getItem("user_info")).);
+        }
+
+        function ModifyFromForm() {
+            if ($("#modifyForm")[0].checkValidity()) {
+                let modifyInfo = {
+                    Id: JSON.parse(window.sessionStorage.getItem("user_info")).Id,
+                    Name: $("#modify_name_input").val(),
+                    Email: $("#modify_email_input").val(),
+                    Password: $("#modify_password_input").val(),
+                    AvatarGUID: JSON.parse(window.sessionStorage.getItem("user_info")).AvatarGUID,
+                    ImageData: ImageUploader.getImageData('modifyImageInput')
+                };
+                return modifyInfo;
+            } else {
+                $("#modifyForm")[0].reportValidity()
+            }
+            return false;
+        }
         // fonction pour la verification
         function VerifyFromForm() {
             if ($("#verificationForm")[0].checkValidity()) {
                 let verifyInfo = {
-                    Id: JSON.parse(window.sessionStorage.getItem("access_token")).Id,
+                    Id: JSON.parse(window.sessionStorage.getItem("user_info")).Id,
                     Code: $("#code_input").val(),
                 };
                 return verifyInfo;
@@ -413,8 +476,7 @@
 
         function init_UI() {
             /* Show a login button if not connected and his name if connected */
-            console.log(window.sessionStorage);
-            if (!window.sessionStorage.access_token || window.sessionStorage.access_token === 'undefined') {
+            if (!window.sessionStorage.user_info || window.sessionStorage.user_info === 'undefined') {
                 $("#login_header").append(
                     $(` 
                         <div id="loginDlg">
@@ -443,16 +505,16 @@
             else {
                 $("#headerLayout").append(
                     $(
-                        '<span class="cmd fa fa-power-off" id="loginCmd" title="Se Déconnecter" data-toggle="tooltip" onClick="logout()"></span>'
+                        '<div id="modifyCmd" title="Modifier ses informations" data-toggle="tooltip">votre nom</div>'
                     ),
-
                     $(
-                        '<div></div>'
+                        '<span class="cmd fa fa-power-off" id="loginCmd" title="Se Déconnecter" data-toggle="tooltip" onClick="logout()"></span>'
                     )
                 );
             }
             $("#newImageCmd").click(newImage);
             $("#loginCmd").click(loginForm);
+            $("#modifyCmd").click(modifyForm);
             // ajouter same thing for bttn sinscrire
             $("#imageDlg").dialog({
                 title: "...",
@@ -584,7 +646,7 @@
                 }]
             });
             $("#registerDlg").dialog({
-                title: "...",
+                title: "Créer un compte",
                 autoOpen: false,
                 modal: true,
                 show: { effect: 'fade', speed: 400 },
@@ -625,9 +687,51 @@
                 }]
             });
 
+            $("#modifyDlg").dialog({
+                title: "Modifier ses informations",
+                autoOpen: false,
+                modal: true,
+                show: { effect: 'fade', speed: 400 },
+                hide: { effect: 'fade', speed: 400 },
+                width: 800,
+                minWidth: 800,
+                maxWidth: 800,
+                height: 500,
+                minHeight: 500,
+                maxHeight: 500,
+                position: { my: "top", at: "top", of: window },
+                buttons: [{
+                    id: "modifyDlgOkBtn",
+                    text: "Modifier",
+                    click: function () {
+                        let modifyInfo = ModifyFromForm();
+                        if (modifyInfo) {
+                            if($("#modify_password_input").val() == $("#modify_confirm_input").val()){
+                                PUT_MODIFY_USER(modifyInfo, error);
+                                $(".scrollContainer").scrollTop(0);
+                                resetModifyForm();
+                                holdCheckETag = false;
+                                $(this).dialog("close");
+                            }
+                            else {
+                                $(".scrollContainer").scrollTop(0);
+                                $("#modify_password_match_error").html("<br> Les mots de passe ne correspondent pas <br>");
+                            }
+                        }
+                    }
+                },
+                {
+                    text: "Annuler",
+                    click: function () {
+                        holdCheckETag = false;
+                        $(this).dialog("close");
+                    }
+                }]
+            });
+
             $("#verificationDlg").dialog({
                 title: "Vérification de courriel",
-                autoOpen: (typeof(window.sessionStorage.access_token) != "undefined" && JSON.parse(window.sessionStorage.getItem("access_token")).VerifyCode != "verified"),
+                autoOpen: (typeof(window.sessionStorage.user_info) != "undefined" && JSON.parse(window.sessionStorage.getItem("user_info")).VerifyCode != "verified"),
                 modal: true,
                 show: { effect: 'fade', speed: 400 },
                 hide: { effect: 'fade', speed: 400 },
@@ -643,11 +747,11 @@
                     text: "Envoyer",
                     click: function (){
                         let verifyinfo = VerifyFromForm();
-                        console.log(verifyinfo);
                         GET_VERIFY(verifyinfo, error);
                         holdCheckETag = false;
                         resetVerificationForm();
                         $(this).dialog("close");
+                        logout();
                     }
                 },
                 {
