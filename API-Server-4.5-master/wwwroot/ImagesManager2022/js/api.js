@@ -91,7 +91,7 @@ function POST_LOGOUT(userId){
             window.sessionStorage.clear();
             window.location.reload();
         },
-        error: () => {console.log("Impossible de se connecter");}
+        error: () => {console.log("Impossible de se déconnecter");}
     });
 }
 // two fonctions for register : one to create the account an one to link the image 
@@ -103,7 +103,7 @@ function POST_REGISTER(registerInfo, errorCallBack) {
         data: JSON.stringify(registerInfo),
         success: (tokenInfo) => {
             window.sessionStorage.setItem("access_token", JSON.stringify(tokenInfo));
-            GET_USER(JSON.stringify(tokenInfo).Id);
+            GET_USER(JSON.parse(window.sessionStorage.getItem("access_token")).Id);
             window.location.reload();
         },
         error: function (jqXHR) {
@@ -117,6 +117,7 @@ function GET_VERIFY(verifyInfo, errorCallBack) {
         type: 'GET',
         contentType: 'application/json',
         success: data => { 
+            GET_USER(JSON.parse(window.sessionStorage.getItem("access_token")).Id);
             window.location.reload(); 
         },
         error: function (jqXHR) { errorCallBack(jqXHR.status) }
@@ -129,7 +130,7 @@ function PUT_MODIFY_USER(userInfo, errorCallBack) {
         contentType: 'application/json',
         headers: {Authorization: "Bearer " + JSON.parse(window.sessionStorage.getItem("access_token")).Access_token },
         data: JSON.stringify(userInfo),
-        success: (tokenInfo) => {
+        success: () => {
             GET_USER(userInfo.Id);
             let user = {
                 Email : JSON.parse(window.sessionStorage.getItem("user_info")).Email,

@@ -405,7 +405,7 @@
             return false;
         }
         function logout() {
-            POST_LOGOUT(JSON.parse(window.sessionStorage.getItem("user_info")).UserId);
+            POST_LOGOUT(JSON.parse(window.sessionStorage.getItem("user_info")).Id);
         }
         // fonction pour le dialogue d'inscription
         function resetRegisterForm() {
@@ -460,7 +460,7 @@
         function VerifyFromForm() {
             if ($("#verificationForm")[0].checkValidity()) {
                 let verifyInfo = {
-                    Id: JSON.parse(window.sessionStorage.getItem("user_info")).Id,
+                    Id: JSON.parse(window.sessionStorage.getItem("access_token")).Id,
                     Code: $("#code_input").val(),
                 };
                 return verifyInfo;
@@ -503,15 +503,28 @@
                 );
             }
             else {
+                let userImage = JSON.parse(window.sessionStorage.getItem("user_info")).AvatarURL;
+                if (userImage == "" || userImage == null){
+                    userImage = "images/No_Avatar.png";
+                }
+
                 $("#headerLayout").append(
                     $(
-                        '<div id="modifyCmd" title="Modifier ses informations" data-toggle="tooltip">votre nom</div>'
+                        '<div id="modifyCmd" class="modify-cmd-wrapper">' +
+                            '<div class="user-avatar-container">' +
+                                '<img src="'+ userImage + '" class="user-avatar" id="userImage"></img>' +
+                            '</div>' +
+                            '<div class="user-name" title="Modifier ses informations" data-toggle="tooltip">' +
+                                 JSON.parse(window.sessionStorage.getItem("user_info")).Name +
+                            '</div>' +
+                        '</div>'
                     ),
                     $(
                         '<span class="cmd fa fa-power-off" id="loginCmd" title="Se Déconnecter" data-toggle="tooltip" onClick="logout()"></span>'
                     )
                 );
             }
+
             $("#newImageCmd").click(newImage);
             $("#loginCmd").click(loginForm);
             $("#modifyCmd").click(modifyForm);
@@ -728,10 +741,9 @@
                     }
                 }]
             });
-
             $("#verificationDlg").dialog({
                 title: "Vérification de courriel",
-                autoOpen: (typeof(window.sessionStorage.user_info) != "undefined" && JSON.parse(window.sessionStorage.getItem("user_info")).VerifyCode != "verified"),
+                autoOpen: (typeof(window.sessionStorage.access_token) != "undefined" && JSON.parse(window.sessionStorage.getItem("user_info")).VerifyCode != "verified"),
                 modal: true,
                 show: { effect: 'fade', speed: 400 },
                 hide: { effect: 'fade', speed: 400 },

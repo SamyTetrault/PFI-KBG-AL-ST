@@ -20,7 +20,7 @@ body {
 }
 .headerLayout {
     display: grid;
-    grid-template-columns: 80px auto 60px 60px 60px;
+    grid-template-columns: 80px auto 60px auto 60px;
     align-items: center;
 }
 .outLinedText {
@@ -243,4 +243,37 @@ span2 {
     display: flex;
     padding: 2rem;
     text-align: center;
+}
+
+.user-name {
+    text-decoration: underline;
+}
+
+.modify-cmd-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    gap: 1rem;
+}
+
+.modify-cmd-wrapper:hover .user-name {
+    color: blue;
+}
+
+.user-avatar-container {
+    border-radius: 50%;
+    width: 3rem;
+    height: 3rem;
+    object-fit: cover;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid black;
+}
+
+.user-avatar {
+    max-height: 100%;
+    max-width: 100%;
 }
