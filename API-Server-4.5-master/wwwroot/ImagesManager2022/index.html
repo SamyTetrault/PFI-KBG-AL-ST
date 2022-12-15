@@ -405,7 +405,7 @@
             return false;
         }
         function logout() {
-            POST_LOGOUT(JSON.parse(window.sessionStorage.getItem("user_info")).Id);
+            POST_LOGOUT(JSON.parse(window.sessionStorage.getItem("access_token")).Id);
         }
         // fonction pour le dialogue d'inscription
         function resetRegisterForm() {

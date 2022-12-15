@@ -1,11 +1,1 @@
-[
-    {
-        "Id": 1,
-        "Name": "Nicolas Chourot",
-        "Email": "Nicolas.Chourot@clg.qc.ca",
-        "Password": "password",
-        "AvatarGUID": "8b33d000-0130-11ed-b7c1-9bbd15ec1d8c",
-        "VerifyCode": "verified",
-        "Created": 1601500396
-    }
-]
+[{"Id":1,"Name":"Nicolas Chourot","Email":"Nicolas.Chourot@clg.qc.ca","Password":"password","AvatarGUID":"8b33d000-0130-11ed-b7c1-9bbd15ec1d8c","VerifyCode":"verified","Created":1601500396},{"Id":2,"Name":"poubelle","Email":"anthony.lamothe12@gmail.com","Password":"poubelle","AvatarGUID":"b9ac8db0-7cbd-11ed-a4dc-c3e73b880d64","Created":1671138982,"VerifyCode":"verified"}]
