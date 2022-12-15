@@ -102,6 +102,8 @@ function POST_REGISTER(registerInfo, errorCallBack) {
         contentType: 'application/json',
         data: JSON.stringify(registerInfo),
         success: (tokenInfo) => {
+            window.sessionStorage.setItem("access_token", JSON.stringify(tokenInfo));
+            window.location.reload();
         },
         error: function (jqXHR) {
             errorCallBack(jqXHR.status)
@@ -110,11 +112,11 @@ function POST_REGISTER(registerInfo, errorCallBack) {
 }
 function GET_VERIFY(verifyInfo, errorCallBack) {
     $.ajax({        
-        url: baseURL + "account/verify?id=" + verifyInfo.Id + "&code=" + verifyInfo.Code,
+        url: baseURL + "accounts/verify?id=" + verifyInfo.Id + "&code=" + verifyInfo.Code,
         type: 'GET',
         contentType: 'application/json',
         success: data => { window.location.reload(); },
         error: function (jqXHR) { errorCallBack(jqXHR.status) }
-    });     
+    });
 }
 //  url: baseURL + "accounts/logout/" + userId,
