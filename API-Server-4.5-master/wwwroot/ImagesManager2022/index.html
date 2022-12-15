@@ -166,6 +166,18 @@
             <div id="errorDlg">
                 <span id="errorMessage"></span>
             </div>
+
+            <div id="unsubscribeDlg" >
+                <form id="unsubscribeForm">
+                    <div class="unsubscribe-info">Voulez-vous vraiment effacer votre compte?</div>
+                </form>
+            </div>
+            <div id="unsubscribeDlgOkBtn">
+                <span id="confirmationMessage"></span>
+            </div>
+            <div id="errorDlg">
+                <span id="errorMessage"></span>
+            </div>
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
@@ -218,6 +230,7 @@
         function refreshimagesList(images, ETag) {
             function insertIntoImageList(image) {
 
+                //console.log(image);
                 $("#imagesList").append(
                     $(` 
                         <div class='imageLayout'>
@@ -239,7 +252,18 @@
                                         style="background-image:url('${image.ThumbnailURL}')">
                                 </div>
                             </a>
-                            <div class="imageDate">${convertToFrenchDate(parseInt(image.Date))}</div>
+                            <div class="image-footer">
+                                <div class="imageDate">
+                                    ${convertToFrenchDate(parseInt(image.Date))}
+                                </div>
+
+                                <div class="user-avatar-container">
+                                    <img src="" class="user-avatar" id="userImage"></img> 
+                                </div> 
+                                <div class="user-name" title="Modifier ses informations" data-toggle="tooltip"> 
+                                    JSON.parse(window.sessionStorage.getItem("user_info")).Name 
+                                </div>
+                            </div>
                         </div>
                     `)
                 );
@@ -317,6 +341,12 @@
             ImageUploader.imageRequired('image', true);
             $("#modifyDlg").dialog('option', 'title', "Modifier");
             $("#modifyDlg").dialog('open');
+        }
+        function unsubscribeForm() {
+            holdCheckETag = true;
+            createMode = true;
+            $("#unsubscribeDlg").dialog('option', 'title', "Attention!");
+            $("#unsubscribeDlg").dialog('open');
         }
 
         function newImage() {
@@ -473,7 +503,12 @@
             // nos champ pour le form
             $("#code_input").val("");
         }
-
+        function UnsubscribeFromForm(){
+            let unsubscribeInfo = {
+                    Id: JSON.parse(window.sessionStorage.getItem("user_info")).Id,
+                };
+                return unsubscribeInfo;
+        }
         function init_UI() {
             /* Show a login button if not connected and his name if connected */
             if (!window.sessionStorage.user_info || window.sessionStorage.user_info === 'undefined') {
@@ -732,6 +767,13 @@
                             }
                         }
                     }
+                }, {
+                    id: "unsubscrubeAccountBtn",
+                    text: "Se désinscrire",
+                    click: function () {
+                        $(this).dialog("close");
+                        unsubscribeForm();
+                    }
                 },
                 {
                     text: "Annuler",
@@ -741,6 +783,7 @@
                     }
                 }]
             });
+            console.log(window.sessionStorage);
             $("#verificationDlg").dialog({
                 title: "Vérification de courriel",
                 autoOpen: (typeof(window.sessionStorage.access_token) != "undefined" && JSON.parse(window.sessionStorage.getItem("user_info")).VerifyCode != "verified"),
@@ -775,7 +818,40 @@
                 }
                 }]
             });
-            
+            $("#unsubscribeDlg").dialog({
+                title: "...",
+                autoOpen: false,
+                modal: true,
+                show: { effect: 'fade', speed: 400 },
+                hide: { effect: 'fade', speed: 400 },
+                width: 400,
+                minWidth: 400,
+                maxWidth: 400,
+                height: 300,
+                minHeight: 300,
+                maxHeight: 300,
+                position: { my: "top", at: "top", of: window },
+                buttons: [{
+                    id: "unsubscribeDlgOkBtn",
+                    text: "Retirer mon compte",
+                    click: function (){
+                        let unsubscribeInfo = UnsubscribeFromForm();
+                        GET_DELETE(unsubscribeInfo, error);
+                        holdCheckETag = false;
+                        $(this).dialog("close");
+                        logout();
+                        window.location.reload();
+                    }
+                },
+                {
+                    text: "Annuler",
+                    click: function () {
+                    logout();
+                    holdCheckETag = false;
+                    $(this).dialog("close");
+                }
+                }]
+            });
 
             $(".scrollContainer").scroll(function () {
                 if ($(".scrollContainer").scrollTop() + $(".scrollContainer").innerHeight() >= $("#imagesList").height()) {

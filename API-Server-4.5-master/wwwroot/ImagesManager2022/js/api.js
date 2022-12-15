@@ -104,7 +104,6 @@ function POST_REGISTER(registerInfo, errorCallBack) {
         success: (tokenInfo) => {
             window.sessionStorage.setItem("access_token", JSON.stringify(tokenInfo));
             GET_USER(JSON.parse(window.sessionStorage.getItem("access_token")).Id);
-            POST_LOGOUT
             window.location.reload();
         },
         error: function (jqXHR) {
@@ -129,7 +128,7 @@ function PUT_MODIFY_USER(userInfo, errorCallBack) {
         url: baseURL + "accounts/modify/" + userInfo.Id,
         type: 'PUT',
         contentType: 'application/json',
-        headers: {Authorization: "Bearer " + JSON.parse(window.sessionStorage.getItem("access_token")).Access_token },
+        headers: { Authorization: "Bearer " + JSON.parse(window.sessionStorage.getItem("access_token")).Access_token },
         data: JSON.stringify(userInfo),
         success: () => {
             GET_USER(userInfo.Id);
@@ -140,6 +139,17 @@ function PUT_MODIFY_USER(userInfo, errorCallBack) {
             POST_LOGIN(user,errorCallBack);
             window.location.reload();
         },
+        error: function (jqXHR) { errorCallBack(jqXHR.status) }
+    });
+}
+
+function GET_DELETE(userInfo, errorCallBack) {
+    $.ajax({
+        url: baseURL + "accounts/remove/" + userInfo.Id,
+        type: 'GET',
+        contentType: 'application/json',
+        headers : { Authorization: "Bearer " + JSON.parse(window.sessionStorage.getItem("access_token")).Access_token },
+        success: () => {},
         error: function (jqXHR) { errorCallBack(jqXHR.status) }
     });
 }

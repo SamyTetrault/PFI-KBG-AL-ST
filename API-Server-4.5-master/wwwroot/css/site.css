@@ -11,3 +11,8 @@ hr {
    float: left;
    margin-right: 20px;
 }
+
+.image-footer {
+   display: flex;
+   justify-content: space-between;
+}
