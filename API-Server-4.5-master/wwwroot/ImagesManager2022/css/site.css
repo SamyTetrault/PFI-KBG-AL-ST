@@ -19,8 +19,8 @@ body {
     align-items: center;
 }
 .headerLayout {
-    display: grid;
-    grid-template-columns: 80px auto 60px auto 60px;
+    display: flex;
+    gap: 1rem;
     align-items: center;
 }
 .outLinedText {
@@ -277,3 +277,63 @@ span2 {
     max-height: 100%;
     max-width: 100%;
 }
+.image {
+    position: relative;
+ }
+ 
+ .image-avatar {
+    position: absolute;
+    background: gray;
+    top: 1rem;
+    left: 1rem;
+ }
+ 
+ .image-info-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+ }
+
+ .image-info-container input {
+    word-wrap: break-word;
+    height: fit-content;
+ }
+
+ .fa-power-off {
+    position: absolute !important;
+    right: 2rem;
+ }
+
+ .aligned-items {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+ }
+
+ .no-margin {
+    margin: 0;
+ }
+
+ .tri-container {
+    background: #cccccc;
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    padding: 1rem;
+    height: 4rem;
+ }
+
+ .fa-search {
+    font-size: 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+ }
+
+ .fa-search::before {
+    color: blue;
+ }
+
+ .tri-asc-desc-label {
+    color: black;
+ }

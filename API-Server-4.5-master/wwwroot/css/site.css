@@ -12,7 +12,19 @@ hr {
    margin-right: 20px;
 }
 
-.image-footer {
+
+.image {
+   position: relative;
+}
+
+.image-avatar {
+      position: absolute;
+   top: 1rem;
+   left: 1rem;
+}
+
+.image-info-container {
    display: flex;
-   justify-content: space-between;
+   flex-direction: column;
+   gap: 2rem;
 }

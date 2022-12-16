@@ -82,6 +82,19 @@ function GET_USER(userId){
         error: () => {console.log("Erreur");}
     });
 }
+function GET_OTHER_USER(userId, successCallBack){
+    $.ajax({
+        url: baseURL + "accounts/index/" + userId,
+        type: 'GET',
+        contentType: 'application/json',
+        success: (otherUserInfo) => { 
+            successCallBack(otherUserInfo); 
+        },
+        error: () => {
+            console.log("Erreur");
+        }
+    });
+}
 function POST_LOGOUT(userId){
     $.ajax({
         url: baseURL + "accounts/logout/" + userId,

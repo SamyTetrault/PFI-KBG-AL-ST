@@ -21,8 +21,8 @@
     <div class="mainContainer">
         <div class="headerPanel">
             <div class="headerLayout" id="headerLayout">
-                <img src="images/camera.png" alt="" data-toggle="tooltip" class="favicon" title="Gestionnaire d'images">
-                <div style="display:flex">
+                <img src="images/camera.png" alt="" data-toggle="tooltip" class="favicon" title="Gestionnaire d'images" id="logo">
+                <div style="display:flex" id="website_name">
                     <span class="header outLinedText tbg-yellow">
                         P
                     </span>
@@ -55,9 +55,19 @@
                     </span>
                 </div>
                 <span class="cmd fa fa-plus-square" id="newImageCmd" title="Ajouter un image" data-toggle="tooltip"></span>
-                <!-- <span class="cmd fa fa-user-circle" id="loginCmd" title="Se Connecter" data-toggle="tooltip"></span> -->
-                <!-- power-off (for logout) -->
             </div>
+        </div>
+
+        <div class="tri-container">
+            <select type="text" id="tri-usagers" placeholder="">
+                <option value="">Tout les usagers</option>
+            </select>
+            <input type="text" id="tri-mots-cles" placeholder="Rechercher par mots-clés">
+            <div class="aligned-items">
+                <label for="tri-asc-desc" class="no-margin tri-asc-desc-label">Trier par date :</label>
+                <input type="checkbox" id="tri-asc-desc" value="desc">
+            </div>
+            <div class="fa fa-search" onclick="FilterForm()"></div>
         </div>
 
         <div class="scrollContainer">
@@ -83,6 +93,11 @@
                         waitingImage='images/writing.gif'>
                     </div>
                     <div class="note">Cliquez-Déposez une image</div>
+                    
+                    <div class="aligned-items">
+                        <label for="public_input" class="no-margin">Privée</label>
+                        <input type="checkbox" name="public_input" id="public_input">
+                    </div>
                 </form>
             </div>
             <div id="confirmDeleteDlg">
@@ -92,6 +107,7 @@
                 <span id="errorMessage"></span>
             </div>
         </div>
+
 
         <div id="login_header">
             <div id="registerDlg" class="scrollContainer">
@@ -178,8 +194,32 @@
             <div id="errorDlg">
                 <span id="errorMessage"></span>
             </div>
+
+            <div id="imageInfoDlg" class="scrollContainer">
+                <div id="imageInfoContainer" class="image-info-container">
+                    <input type="text" id="titre_info" name="titre_info" class="form-control" Readonly>
+
+                    <input type="text" id="description_info" name="description_info" class="form-control" Readonly>
+
+                    <a target="_blank" id="image_info_href">
+                        <img  id="image_info"></img>
+                    </a>
+                    <div class="user-avatar-container">
+                        <img src="" class="user-avatar" id="userImageAvatar_info"></img> 
+                    </div>
+                    <input type="text" id="name_info" name="name_info" class="form-control" Readonly> 
+                    <input type="text" id="date_info" name="date_info" class="form-control" Readonly>
+                </div>
+            </div>
+            <div id="creatorDlg" class="scrollContainer">
+                <div id="creatorContainer">
+                    <div>PFI 420-KBG-LG</div>
+                    <div>Anthony Lamothe et Samy Tétrault</div>
+                </div>
+            </div>
         </div>
     </div>
+
     <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
@@ -212,16 +252,24 @@
                 getImagesList();
             }
         }
-
         function getImagesList(refresh = true) {
             appendMode = !refresh;
             function prepareQueryString() {
+                //aller chercher la valeur qui est poster dans le filtre
+                let users = "";
+                let keywords = "";
+                let dateSort = "desc";
+                if(typeof(window.sessionStorage.filters) != 'undefined') {
+                    users = JSON.parse(window.sessionStorage.getItem("filters")).Users;
+                    keywords = JSON.parse(window.sessionStorage.getItem("filters")).Keywords;
+                    dateSort = JSON.parse(window.sessionStorage.getItem("filters")).dateSort;
+                }
                 let queryString = "";
                 if (appendMode) {
-                    queryString = `?sort=Date,desc&offset=${Math.trunc(imagesCount / appendCount)}&limit=${appendCount}`;
+                    queryString = `?sort=Date,${dateSort}&offset=${Math.trunc(imagesCount / appendCount)}&limit=${appendCount}&UserId=${users}&Title=*${keywords}*&Description=*${keywords}*    `;
                     imagesCount += appendCount;
                 } else {
-                    queryString = `?sort=Date,desc&offset=${0}&limit=${imagesCount}`;
+                    queryString = `?sort=Date,${dateSort}&offset=${0}&limit=${imagesCount}&UserId=${users}&Title=*${keywords}*&Description=*${keywords}*`;
                 }
                 return queryString;
             }
@@ -229,45 +277,74 @@
         }
         function refreshimagesList(images, ETag) {
             function insertIntoImageList(image) {
-
-                //console.log(image);
-                $("#imagesList").append(
-                    $(` 
-                        <div class='imageLayout'>
-                            <div class='imageHeader'>
-                                <div class="imageTitle">${image.Title}</div>
-                                <div    class="cmd editCmd  fa fa-pencil-square" 
-                                        imageid="${image.Id}" 
-                                        title="Editer ${image.Title}" 
-                                        data-toggle="tooltip">
+                function ShowImages() {
+                    GET_OTHER_USER(image.UserId, ShowUserInfo);
+                        
+                    $("#imagesList").append(
+                        $(` 
+                            <div class='imageLayout' title='' data-toggle="tooltip">
+                                <div id='imageHeader' class='imageHeader imageHeader${image.Id}'>
+                                    <div class="imageTitle">${image.Title}</div>
+                                    <div id="editCmd${image.Id}" class="cmd editCmd fa fa-pencil-square" imageid="${image.Id}" title="Editer ${image.Title}" data-toggle="tooltip"></div>
+                                    <div id="deleteCmd${image.Id}" class="cmd deleteCmd fa fa-window-close" imageid="${image.Id}" title="Effacer ${image.Title}" data-toggle="tooltip"></div>
                                 </div>
-                                <div    class="cmd deleteCmd fa fa-window-close" 
-                                        imageid="${image.Id}" 
-                                        title="Effacer ${image.Title}" 
-                                        data-toggle="tooltip">
+                                <div id='imageLayout${image.Id}'>
+                                    <div id='public_image' class='image' style="background-image:url('${image.ThumbnailURL}')">
+                                        <div class="user-avatar-container image-avatar">
+                                            <img src="" class="user-avatar" id="userImage${image.Id}"></img> 
+                                        </div> 
+                                    </div>
                                 </div>
-                            </div>
-                            <a href="${image.OriginalURL}" target="_blank">
-                                <div    class='image' 
-                                        style="background-image:url('${image.ThumbnailURL}')">
-                                </div>
-                            </a>
-                            <div class="image-footer">
                                 <div class="imageDate">
                                     ${convertToFrenchDate(parseInt(image.Date))}
                                 </div>
-
-                                <div class="user-avatar-container">
-                                    <img src="" class="user-avatar" id="userImage"></img> 
-                                </div> 
-                                <div class="user-name" title="Modifier ses informations" data-toggle="tooltip"> 
-                                    JSON.parse(window.sessionStorage.getItem("user_info")).Name 
-                                </div>
                             </div>
-                        </div>
-                    `)
-                );
+                        `)
+                    );
+                    $("#imageLayout" + image.Id).click(temp);
+                    function temp(){
+                        imageInfoForm(image.UserId,image.Title, image.Description, image.ThumbnailURL, image.OriginalURL , image.Date);
+                    }
+                    function ShowUserInfo(userInfo) {
+                        let userImage = userInfo.AvatarURL;
+                        if (userImage == "" || userImage == null){
+                            userImage = "images/No_Avatar.png";
+                        }
+                        if (typeof(window.sessionStorage.user_info) != 'undefined' && userInfo.Id != JSON.parse(window.sessionStorage.getItem("user_info")).Id){
+                            $("#editCmd" + image.Id).remove();
+                            $("#deleteCmd" + image.Id).remove();
+                        };
+                        $("#imageLayout" + image.Id).attr("title", userInfo.Name);
+                        if(typeof(window.sessionStorage.user_info) != 'undefined' && 
+                        (!image.Private && userInfo.Id == JSON.parse(window.sessionStorage.getItem("user_info")).Id)){
+                            userImage = "images/shared_1.png";
+                            $("#userImage" + image.Id).attr("src", userImage);
+                        }else{
+                            $("#userImage" + image.Id).attr("src", userImage);
+                        }
+                    }
+                }
+                if(image.Private && typeof(window.sessionStorage.user_info) != 'undefined'){
+                    if(JSON.parse(window.sessionStorage.getItem("user_info")).Id == image.UserId){
+                        ShowImages();
+                    }
+                }else if(!image.Private){
+                    if(typeof(window.sessionStorage.user_info) != 'undefined'){
+                        if(JSON.parse(window.sessionStorage.getItem("user_info")).Id == image.UserId) {
+                            ShowImages();
+                        }else{
+                            ShowImages();
+                            $("#editCmd" + image.Id).remove();
+                            $("#deleteCmd" + image.Id).remove();
+                        }
+                    }else{
+                        ShowImages();
+                        $("#editCmd" + image.Id).remove();
+                        $("#deleteCmd" + image.Id).remove();
+                    }
+                }
             }
+            
             currentETag = ETag;
             previousScrollPosition = $(".scrollContainer").scrollTop();
             if (!appendMode) $("#imagesList").empty();
@@ -275,8 +352,26 @@
             if (appendMode && images.length == 0)
                 imagesCount -= appendCount;
 
+            let usersForFilter = "";
             for (let image of images) {
                 insertIntoImageList(image);
+                // tri-usagers
+                if(!usersForFilter.includes(image.UserId)){
+                    usersForFilter += image.UserId + "-";
+                }
+            }
+            let tabUsers = usersForFilter.split("-");
+            tabUsers.forEach(element => {
+                if(element != "") {
+                    GET_OTHER_USER(element, AddOptionUsersFilter);
+                }
+            });
+            function AddOptionUsersFilter(userInfo){
+                $("#tri-usagers").append(
+                    $(` 
+                        <option value="${userInfo.Id}">${userInfo.Name}</option>
+                    `)
+                );
             }
 
             $(".scrollContainer").scrollTop(previousScrollPosition);
@@ -348,7 +443,34 @@
             $("#unsubscribeDlg").dialog('option', 'title', "Attention!");
             $("#unsubscribeDlg").dialog('open');
         }
-
+        function imageInfoForm(userId,title,description,thumbnail_source,image_source,date) {
+            resetImageInfoForm();
+            holdCheckETag = true;
+            createMode = true;
+            $("#imageInfoDlg").dialog('option', 'title', "Information");
+            $("#imageInfoDlg").dialog('open');
+            // Afficher les information dans le form
+            $("#titre_info").val(title);
+            $("#description_info").val(description);
+            document.getElementById("image_info").src = thumbnail_source;
+            document.getElementById("image_info_href").href = image_source;
+            $("#date_info").val(convertToFrenchDate(parseInt(date)));
+            GET_OTHER_USER(userId, ShowUserInfo);
+            function ShowUserInfo(userInfo) {
+                let userImage = userInfo.AvatarURL;
+                if (userImage == "" || userImage == null){
+                    userImage = "images/No_Avatar.png";
+                }
+                $("#userImageAvatar_info").attr("src", userImage);
+                $("#name_info").val(userInfo.Name);
+            }   
+        }
+        function showCreators() {
+            holdCheckETag = true;
+            createMode = true;
+            $("#creatorDlg").dialog('option', 'title', "À Propos");
+            $("#creatorDlg").dialog('open');
+        }
         function newImage() {
             holdCheckETag = true;
             createMode = true;
@@ -399,7 +521,9 @@
                     Title: $("#title_input").val(),
                     Description: $("#description_input").val(),
                     ImageData: ImageUploader.getImageData('image'),
-                    Date: parseInt($("#date_input").val())
+                    Date: parseInt($("#date_input").val()),
+                    UserId: JSON.parse(window.sessionStorage.getItem("user_info")).Id,
+                    Private: $("#public_input").is(':checked')
                 };
                 return image;
             } else {
@@ -467,7 +591,6 @@
             $("#modify_password_input").val("");
             $("#modify_confirm_input").val("");
             ImageUploader.setImage('modifyImageInput', JSON.parse(window.sessionStorage.getItem("user_info")).AvatarURL);
-            //$("#modify_image_input").src(JSON.parse(window.sessionStorage.getItem("user_info")).);
         }
 
         function ModifyFromForm() {
@@ -509,6 +632,27 @@
                 };
                 return unsubscribeInfo;
         }
+        function resetImageInfoForm() {
+            // nos champ pour le form
+            $("#titre_info").val("");
+            $("#description_info").val("");
+            document.getElementById("image_info").src = "";
+            document.getElementById("image_info_href").href = "";
+            $("#date_info").val("");
+        }
+        function FilterForm() {
+            let dateSort = "desc";
+            if ($("#tri-asc-desc").is(':checked')) {
+                dateSort = "asc";
+            }
+            let filter = {
+                Users : $('#tri-usagers').val(),
+                Keywords : $('#tri-mots-cles').val(),
+                dateSort : dateSort
+            };
+            window.sessionStorage.setItem("filters", JSON.stringify(filter));
+            window.location.reload();
+        }
         function init_UI() {
             /* Show a login button if not connected and his name if connected */
             if (!window.sessionStorage.user_info || window.sessionStorage.user_info === 'undefined') {
@@ -536,6 +680,7 @@
                         '<span class="cmd fa fa-user-circle" id="loginCmd" title="Se Connecter" data-toggle="tooltip"></span>'
                     )
                 );
+                $("#newImageCmd").remove();
             }
             else {
                 let userImage = JSON.parse(window.sessionStorage.getItem("user_info")).AvatarURL;
@@ -563,6 +708,8 @@
             $("#newImageCmd").click(newImage);
             $("#loginCmd").click(loginForm);
             $("#modifyCmd").click(modifyForm);
+            $("#website_name").click(showCreators);
+            $("#logo").click(showCreators);
             // ajouter same thing for bttn sinscrire
             $("#imageDlg").dialog({
                 title: "...",
@@ -570,9 +717,9 @@
                 modal: true,
                 show: { effect: 'fade', speed: 400 },
                 hide: { effect: 'fade', speed: 400 },
-                width: 640,
-                minWidth: 640,
-                maxWidth: 640,
+                width: 650,
+                minWidth: 650,
+                maxWidth: 650,
                 height: 780,
                 minHeight: 780,
                 maxHeight: 780,
@@ -783,7 +930,6 @@
                     }
                 }]
             });
-            console.log(window.sessionStorage);
             $("#verificationDlg").dialog({
                 title: "Vérification de courriel",
                 autoOpen: (typeof(window.sessionStorage.access_token) != "undefined" && JSON.parse(window.sessionStorage.getItem("user_info")).VerifyCode != "verified"),
@@ -852,16 +998,54 @@
                 }
                 }]
             });
-
+            $("#imageInfoDlg").dialog({
+                title: "...",
+                autoOpen: false,
+                modal: true,
+                show: { effect: 'fade', speed: 400 },
+                hide: { effect: 'fade', speed: 400 },
+                width: 600,
+                minWidth: 600,
+                maxWidth: 600,
+                height: 800,
+                minHeight: 800,
+                maxHeight: 800,
+                position: { my: "top", at: "top", of: window },
+                buttons: [{
+                    text: "Annuler",
+                    click: function () {
+                    holdCheckETag = false;
+                    $(this).dialog("close");
+                }
+                }]
+            });
             $(".scrollContainer").scroll(function () {
                 if ($(".scrollContainer").scrollTop() + $(".scrollContainer").innerHeight() >= $("#imagesList").height()) {
                     getImagesList(false);
                 }
             });
+            $("#creatorDlg").dialog({
+                title: "...",
+                autoOpen: false,
+                modal: true,
+                show: { effect: 'fade', speed: 400 },
+                hide: { effect: 'fade', speed: 400 },
+                width: 400,
+                minWidth: 400,
+                maxWidth: 400,
+                height: 200,
+                minHeight: 200,
+                maxHeight: 200,
+                position: { my: "top", at: "top", of: window },
+                buttons: [{
+                    text: "Fermer",
+                    click: function () {
+                    holdCheckETag = false;
+                    $(this).dialog("close");
+                }
+                }]
+            });
         }
-
     </script>
-
 </body>
-
 </html>
